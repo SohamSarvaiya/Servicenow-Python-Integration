@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ServiceNow Integration Hub</title>
+<style>
+:root{--bg:#0b1020;--card:rgba(255,255,255,.06);--bd:rgba(255,255,255,.1);--tx:#e8ecf8;--mut:#8b95b5;--a:#7c5cff;--b:#22d3ee;--ok:#34d399;--warn:#fbbf24;--bad:#f87171}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 Inter,system-ui,sans-serif;color:var(--tx);min-height:100vh;
+background:radial-gradient(900px 500px at 85% -10%,#3b2a8f55,transparent),radial-gradient(700px 500px at -10% 110%,#0e749044,transparent),var(--bg);display:flex}
+aside{width:230px;padding:22px 14px;border-right:1px solid var(--bd);position:sticky;top:0;height:100vh;flex-shrink:0}
+.logo{display:flex;gap:10px;align-items:center;font-weight:700;font-size:16px;margin:0 8px 28px}
+.logo i{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--a),var(--b));display:grid;place-items:center;font-style:normal}
+nav button{width:100%;text-align:left;background:none;border:0;color:var(--mut);padding:11px 12px;border-radius:10px;font:inherit;cursor:pointer;margin-bottom:4px}
+nav button:hover{background:var(--card)}nav button.on{background:linear-gradient(90deg,#7c5cff33,#22d3ee11);color:#fff}
+main{flex:1;padding:28px 34px;min-width:0}h1{margin:0 0 4px;font-size:24px}.sub{color:var(--mut);margin-bottom:22px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;backdrop-filter:blur(8px)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.stat b{display:block;font-size:30px;margin-top:4px;background:linear-gradient(90deg,#fff,var(--b));-webkit-background-clip:text;color:transparent}
+.stat span{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.grid2{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}
+.bar{display:flex;align-items:center;gap:10px;margin:9px 0}.bar em{width:120px;font-style:normal;color:var(--mut)}
+.bar div{flex:1;height:10px;background:#ffffff12;border-radius:9px;overflow:hidden}.bar div i{display:block;height:100%;background:linear-gradient(90deg,var(--a),var(--b));border-radius:9px}
+table{width:100%;border-collapse:collapse}th{color:var(--mut);font-weight:500;text-align:left;font-size:12px;text-transform:uppercase;padding:10px}
+td{padding:12px 10px;border-top:1px solid var(--bd)}tr.r{cursor:pointer}tr.r:hover td{background:#ffffff08}
+.pill{padding:3px 10px;border-radius:99px;font-size:12px;background:#ffffff14;white-space:nowrap}
+.p1{color:var(--bad);background:#f8717122}.p2{color:var(--warn);background:#fbbf2422}.p3{color:var(--b);background:#22d3ee22}.p4{color:var(--ok);background:#34d39922}
+.tool{display:flex;gap:10px;margin-bottom:14px}
+input,select,textarea{background:#0006;border:1px solid var(--bd);color:var(--tx);border-radius:10px;padding:10px 12px;font:inherit;width:100%}
+.tool input{max-width:340px}label{display:block;color:var(--mut);font-size:12px;margin:12px 0 5px}
+button.pr{background:linear-gradient(135deg,var(--a),#5b8cff);color:#fff;border:0;border-radius:10px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+button.gh{background:var(--card);border:1px solid var(--bd);color:var(--tx);border-radius:10px;padding:10px 16px;font:inherit;cursor:pointer}
+.drawer{position:fixed;right:0;top:0;height:100vh;width:460px;background:#10162b;border-left:1px solid var(--bd);padding:24px;overflow:auto;transform:translateX(100%);transition:.25s;z-index:5}
+.drawer.open{transform:none}.close{float:right}.kv{display:grid;grid-template-columns:110px 1fr;gap:6px;margin:14px 0;color:var(--mut)}.kv b{color:var(--tx);font-weight:500}
+.modal{position:fixed;inset:0;background:#000a;display:none;place-items:center;z-index:9}.modal.open{display:grid}.modal .card{width:480px;background:#10162b}
+.toast{position:fixed;bottom:22px;right:22px;background:#10162b;border:1px solid var(--bd);padding:12px 18px;border-radius:12px;display:none;z-index:20}
+.sec{display:none}.sec.on{display:block}.ai{margin-top:14px;border-left:3px solid var(--a);padding-left:12px}.ai li{margin:3px 0}
+.demo{display:inline-block;margin-left:8px;background:#fbbf2422;color:var(--warn);padding:2px 10px;border-radius:99px;font-size:12px}
+@media(max-width:900px){aside{display:none}.stats{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.drawer{width:100%}main{padding:18px}}
+</style></head><body>
+<aside><div class="logo"><i>⚡</i>SN Hub</div>
+<nav><button class="on" data-s="dash">📊 Dashboard</button><button data-s="inc">🎫 Incidents</button><button data-s="set">⚙️ Settings</button></nav>
+<p style="color:var(--mut);font-size:12px;margin:30px 10px">Keys sirf aapke browser (session) me rehti hain, GitHub ya server par save nahi hoti.</p></aside>
+<main>
+<section class="sec on" id="dash"><h1>Dashboard <span class="demo" id="modeTag">Demo mode</span></h1><div class="sub">ServiceNow incidents ka rule-based overview</div>
+<div class="stats"><div class="card stat"><span>Total</span><b id="sTotal">0</b></div><div class="card stat"><span>Critical / High</span><b id="sHigh">0</b></div><div class="card stat"><span>New</span><b id="sNew">0</b></div><div class="card stat"><span>Categories</span><b id="sCat">0</b></div></div>
+<div class="grid2"><div class="card"><h3 style="margin-top:0">Category distribution</h3><div id="bars"></div></div>
+<div class="card"><h3 style="margin-top:0">Quick actions</h3><p style="color:var(--mut)">Incidents refresh karo, naya ticket banao ya AI se analyze karo.</p>
+<button class="pr" onclick="load()">↻ Refresh</button> <button class="gh" onclick="openNew()">＋ New Incident</button></div></div></section>
+<section class="sec" id="inc"><h1>Incidents</h1><div class="sub">Row par click karke details, rule categorization aur AI analysis dekho</div>
+<div class="tool"><input id="q" placeholder="Search number ya description…" oninput="render()"><button class="pr" onclick="openNew()">＋ New</button><button class="gh" onclick="load()">↻</button></div>
+<div class="card" style="padding:6px"><table><thead><tr><th>Number</th><th>Description</th><th>Priority</th><th>State</th><th>Rule category</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<section class="sec" id="set"><h1>Settings</h1><div class="sub">Apni credentials yahin daalo</div><div class="grid2">
+<div class="card"><h3 style="margin-top:0">ServiceNow</h3><label><input type="checkbox" id="demo" checked style="width:auto"> Demo mode (bina instance ke try karo)</label>
+<label>Instance URL</label><input id="inst" placeholder="https://devXXXXX.service-now.com"><label>Username</label><input id="usr"><label>Password</label><input id="pwd" type="password">
+<label>OAuth Client ID (optional)</label><input id="cid"><label>OAuth Client Secret (optional)</label><input id="csec" type="password"></div>
+<div class="card"><h3 style="margin-top:0">AI Provider</h3><label>Provider</label><select id="prov" onchange="defModel()"><option value="openai">OpenAI (ChatGPT)</option><option value="anthropic">Anthropic (Claude)</option><option value="gemini">Google Gemini</option></select>
+<label>API Key</label><input id="key" type="password" placeholder="sk-… / sk-ant-… / AIza…"><label>Model</label><input id="model">
+<br><br><button class="pr" onclick="saveSet()">Save & Connect</button></div></div></section></main>
+<div class="drawer" id="dr"></div>
+<div class="modal" id="nm"><div class="card"><h3 style="margin-top:0">New Incident</h3><label>Short description</label><input id="nsd"><label>Description</label><textarea id="nd" rows="3"></textarea>
+<label>Priority</label><select id="np"><option value="1">1 - Critical</option><option value="2">2 - High</option><option value="3" selected>3 - Moderate</option><option value="4">4 - Low</option></select><br><br>
+<button class="pr" onclick="createInc()">Create</button> <button class="gh" onclick="document.getElementById('nm').classList.remove('open')">Cancel</button></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id),M={openai:"gpt-4o-mini",anthropic:"claude-sonnet-4-6",gemini:"gemini-2.0-flash"};
+let data=[],S=JSON.parse(sessionStorage.getItem("sn")||"{}");
+const toast=t=>{$("toast").textContent=t;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",3500)};
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.s));
+function show(s){document.querySelectorAll(".sec").forEach(e=>e.classList.toggle("on",e.id==s));document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.s==s))}
+function defModel(){$("model").value=M[$("prov").value]}
+function cfg(){return{demo:$("demo").checked,instance:$("inst").value,username:$("usr").value,password:$("pwd").value,client_id:$("cid").value,client_secret:$("csec").value}}
+function llm(){return{provider:$("prov").value,api_key:$("key").value,model:$("model").value}}
+function saveSet(){sessionStorage.setItem("sn",JSON.stringify({c:cfg(),l:llm()}));toast("Settings saved (sirf is browser session me)");load();show("dash")}
+function restore(){const c=S.c||{demo:true},l=S.l||{provider:"openai"};$("demo").checked=c.demo;$("inst").value=c.instance||"";$("usr").value=c.username||"";$("pwd").value=c.password||"";$("cid").value=c.client_id||"";$("csec").value=c.client_secret||"";$("prov").value=l.provider;$("key").value=l.api_key||"";$("model").value=l.model||M[l.provider]}
+async function api(p,b){const r=await fetch(p,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)});const j=await r.json();if(!r.ok)throw new Error(j.error||"Error");return j}
+async function load(){$("modeTag").textContent=cfg().demo?"Demo mode":"Live: "+cfg().instance;try{data=(await api("/api/incidents/list",{config:cfg(),limit:50})).incidents;render()}catch(e){toast(e.message)}}
+const pc=p=>"p"+String(p||"3").trim()[0];
+function render(){const q=$("q").value.toLowerCase(),v=data.filter(i=>(i.number+i.short_description).toLowerCase().includes(q));
+$("rows").innerHTML=v.map(i=>`<tr class="r" onclick="detail('${i.sys_id}')"><td><b>${esc(i.number)}</b></td><td>${esc(i.short_description)}</td><td><span class="pill ${pc(i.priority)}">${esc(i.priority)}</span></td><td>${esc(i.state)}</td><td><span class="pill">${esc(i.rule.category)}</span></td></tr>`).join("");
+const cats={};data.forEach(i=>cats[i.rule.category]=(cats[i.rule.category]||0)+1);const mx=Math.max(1,...Object.values(cats));
+$("bars").innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<div class="bar"><em>${esc(k)}</em><div><i style="width:${n/mx*100}%"></i></div><b>${n}</b></div>`).join("");
+$("sTotal").textContent=data.length;$("sHigh").textContent=data.filter(i=>/^[12]/.test(i.priority)).length;$("sNew").textContent=data.filter(i=>i.state=="New").length;$("sCat").textContent=Object.keys(cats).length}
+function detail(id){const i=data.find(x=>x.sys_id==id);$("dr").innerHTML=`<button class="gh close" onclick="$('dr').classList.remove('open')">✕</button><h2 style="margin:0">${esc(i.number)}</h2><p>${esc(i.short_description)}</p>
+<span class="pill ${pc(i.priority)}">${esc(i.priority)}</span> <span class="pill">${esc(i.state)}</span>
+<div class="kv"><span>Caller</span><b>${esc(i.caller_id)}</b><span>Group</span><b>${esc(i.assignment_group)}</b><span>Opened</span><b>${esc(i.opened_at)}</b><span>Description</span><b>${esc(i.description)}</b></div>
+<div class="card"><b>Rule-based result</b><div class="kv"><span>Category</span><b>${esc(i.rule.category)}</b><span>Confidence</span><b>${Math.round(i.rule.confidence*100)}%</b><span>Matched</span><b>${esc(i.rule.matched.join(", ")||"-")}</b><span>Suggested</span><b>${esc(i.rule.suggested_priority)}</b></div></div><br>
+<button class="pr" onclick="runAI('${id}')">🤖 AI Analyze</button> <button class="gh" onclick="applyRule('${id}')">Apply rule category</button><div id="aiOut"></div>`;$("dr").classList.add("open")}
+async function runAI(id){const i=data.find(x=>x.sys_id==id);$("aiOut").innerHTML='<p style="color:var(--mut)">Analyzing…</p>';
+try{const a=(await api("/api/ai",{llm:llm(),incident:i})).analysis;$("aiOut").innerHTML=`<div class="ai"><b>${esc(llm().provider)} analysis</b><p>${esc(a.summary)}</p><p><b>Category:</b> ${esc(a.category||"-")} · <b>Priority:</b> ${esc(a.priority||"-")}</p><p><b>Root cause:</b> ${esc(a.root_cause_hypothesis||"-")}</p><ul>${(a.next_steps||[]).map(s=>`<li>${esc(s)}</li>`).join("")}</ul></div>`}catch(e){$("aiOut").innerHTML="";toast(e.message)}}
+async function applyRule(id){const i=data.find(x=>x.sys_id==id);try{await api("/api/incidents/update",{config:cfg(),sys_id:id,data:{category:i.rule.category.toLowerCase()}});toast("Ticket update ho gaya");load()}catch(e){toast(e.message)}}
+function openNew(){$("nm").classList.add("open")}
+async function createInc(){try{await api("/api/incidents/create",{config:cfg(),data:{short_description:$("nsd").value,description:$("nd").value,priority:$("np").value}});$("nm").classList.remove("open");$("nsd").value=$("nd").value="";toast("Incident create ho gaya ✔");load()}catch(e){toast(e.message)}}
+restore();load();
+</script></body></html>
